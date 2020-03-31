@@ -217,46 +217,6 @@ jobs:
         with:
           name: ct-amqqueue_backward_compatibility-logs
           path: "*-ct-logs-*.tar.xz"
-  ct-authn_authz_context_propagation:
-    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
-    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-authn_authz_context_propagation
-    runs-on: ubuntu-18.04
-    steps:
-      - name: CHECKOUT REPOSITORY
-        uses: actions/checkout@v2
-      # https://github.com/marketplace/actions/setup-elixir
-      - name: CONFIGURE OTP & ELIXIR
-        uses: actions/setup-elixir@v1
-        with:
-          otp-version: 21.3
-          # https://github.com/elixir-lang/elixir/releases
-          elixir-version: 1.10.2
-      - name: CACHE DEPS
-        uses: actions/cache@v1
-        with:
-          path: deps
-          key: otp-21.3_git-${{ github.sha }}_deps
-      - name: CACHE EBIN
-        uses: actions/cache@v1
-        with:
-          path: ebin
-          key: otp-21.3_git-${{ github.sha }}_ebin
-      - name: RUN TESTS
-        run: |
-          branch_or_tag_name=${GITHUB_REF#refs/*/}
-          make ct-authn_authz_context_propagation base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
-      - name: ON FAILURE ARCHIVE TESTS LOGS
-        if: failure()
-        run: |
-          make ct-logs-archive
-      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
-        # https://github.com/marketplace/actions/upload-artifact
-        uses: actions/upload-artifact@v2-preview
-        if: failure()
-        with:
-          name: ct-authn_authz_context_propagation-logs
-          path: "*-ct-logs-*.tar.xz"
   ct-backing_queue:
     needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
@@ -1380,6 +1340,46 @@ jobs:
         with:
           name: ct-many_node_ha-logs
           path: "*-ct-logs-*.tar.xz"
+  ct-message_size_limit:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-message_size_limit
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-message_size_limit base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-message_size_limit-logs
+          path: "*-ct-logs-*.tar.xz"
   ct-metrics:
     needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
@@ -2019,6 +2019,46 @@ jobs:
         if: failure()
         with:
           name: ct-publisher_confirms_parallel-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-queue_length_limits:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-queue_length_limits
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-queue_length_limits base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-queue_length_limits-logs
           path: "*-ct-logs-*.tar.xz"
   ct-queue_master_location:
     needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
@@ -2700,10 +2740,10 @@ jobs:
         with:
           name: ct-topic_permission-logs
           path: "*-ct-logs-*.tar.xz"
-  ct-unit:
+  ct-unit_access_control:
     needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-unit
+    name: ct-unit_access_control
     runs-on: ubuntu-18.04
     steps:
       - name: CHECKOUT REPOSITORY
@@ -2728,7 +2768,7 @@ jobs:
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
-          make ct-unit base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make ct-unit_access_control base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
       - name: ON FAILURE ARCHIVE TESTS LOGS
         if: failure()
         run: |
@@ -2738,12 +2778,12 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         if: failure()
         with:
-          name: ct-unit-logs
+          name: ct-unit_access_control-logs
           path: "*-ct-logs-*.tar.xz"
-  ct-unit_inbroker_parallel:
+  ct-unit_access_control_authn_authz_context_propagation:
     needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-unit_inbroker_parallel
+    name: ct-unit_access_control_authn_authz_context_propagation
     runs-on: ubuntu-18.04
     steps:
       - name: CHECKOUT REPOSITORY
@@ -2768,7 +2808,7 @@ jobs:
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
-          make ct-unit_inbroker_parallel base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make ct-unit_access_control_authn_authz_context_propagation base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
       - name: ON FAILURE ARCHIVE TESTS LOGS
         if: failure()
         run: |
@@ -2778,7 +2818,447 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         if: failure()
         with:
-          name: ct-unit_inbroker_parallel-logs
+          name: ct-unit_access_control_authn_authz_context_propagation-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_amqp091_content_framing:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_amqp091_content_framing
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_amqp091_content_framing base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_amqp091_content_framing-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_amqp091_server_properties:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_amqp091_server_properties
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_amqp091_server_properties base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_amqp091_server_properties-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_app_management:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_app_management
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_app_management base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_app_management-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_collections:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_collections
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_collections base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_collections-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_config_value_encryption:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_config_value_encryption
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_config_value_encryption base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_config_value_encryption-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_connection_tracking:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_connection_tracking
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_connection_tracking base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_connection_tracking-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_credit_flow:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_credit_flow
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_credit_flow base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_credit_flow-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_disk_monitor:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_disk_monitor
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_disk_monitor base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_disk_monitor-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_disk_monitor_mocks:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_disk_monitor_mocks
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_disk_monitor_mocks base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_disk_monitor_mocks-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_file_handle_cache:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_file_handle_cache
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_file_handle_cache base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_file_handle_cache-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_gen_server2:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_gen_server2
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_gen_server2 base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_gen_server2-logs
           path: "*-ct-logs-*.tar.xz"
   ct-unit_log_config:
     needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
@@ -2820,6 +3300,206 @@ jobs:
         with:
           name: ct-unit_log_config-logs
           path: "*-ct-logs-*.tar.xz"
+  ct-unit_log_management:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_log_management
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_log_management base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_log_management-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_plugin_directories:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_plugin_directories
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_plugin_directories base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_plugin_directories-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_operator_policy:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_operator_policy
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_operator_policy base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_operator_policy-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_pg_local:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_pg_local
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_pg_local base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_pg_local-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_priority_queue:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_priority_queue
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_priority_queue base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_priority_queue-logs
+          path: "*-ct-logs-*.tar.xz"
   ct-unit_queue_consumers:
     needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
@@ -2859,6 +3539,126 @@ jobs:
         if: failure()
         with:
           name: ct-unit_queue_consumers-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_stats_and_metrics:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_stats_and_metrics
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_stats_and_metrics base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_stats_and_metrics-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_supervisor2:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_supervisor2
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_supervisor2 base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_supervisor2-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_vm_memory_monitor:
+    needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_vm_memory_monitor
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_vm_memory_monitor base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        if: failure()
+        run: |
+          make ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        if: failure()
+        with:
+          name: ct-unit_vm_memory_monitor-logs
           path: "*-ct-logs-*.tar.xz"
   ct-vhost:
     needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]

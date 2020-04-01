@@ -72,7 +72,11 @@ jobs:
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
           make -C deps/rabbitmq_server_release start-background-broker PLUGINS="rabbitmq_federation rabbitmq_stomp" DEPS_DIR=$PWD/deps
-          make -C deps/rabbitmq_cli tests DEPS_DIR=$PWD/deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name DEPS_DIR=$PWD/deps
+          if ! make -C deps/rabbitmq_cli tests DEPS_DIR=$PWD/deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name DEPS_DIR=$PWD/deps V=2
+          then
+            echo "Run rabbitmq-cli tests again, because: https://elixirforum.com/t/intermittent-compilation-errors-read-cache-infinity-when-running-tests-in-github-actions/30284"
+            make -C deps/rabbitmq_cli tests DEPS_DIR=$PWD/deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name DEPS_DIR=$PWD/deps V=2
+          fi
       - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview

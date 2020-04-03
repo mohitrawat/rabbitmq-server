@@ -37,6 +37,8 @@ jobs:
           rm -fr deps/*/{.git,test}
           echo "Symlink rabbit dep to rabbitmq-server to address the hard-coding in install-cli-scripts make target..."
           ln -s deps/rabbit ../
+          ls -lah deps/rabbit
+          ls -lah deps/rabbit/scripts/*
       - name: GENERATE DEPS VERSIONS
         run: |
           make rabbitmq-server-tested-deps.mk
@@ -937,6 +939,8 @@ jobs:
           key: otp-22.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
+          ls -lah deps/rabbit
+          ls -lah deps/rabbit/scripts/*
           branch_or_tag_name=${GITHUB_REF#refs/*/}
           touch ebin/* apps/rabbitmq_prelaunch/ebin/*
           make ct-feature_flags base_rmq_ref=master current_rmq_ref=$branch_or_tag_named FULL=

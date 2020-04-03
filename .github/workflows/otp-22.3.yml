@@ -33,6 +33,8 @@ jobs:
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
           make deps test-deps rabbitmq-cli-test-deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name DEPS_DIR=$PWD/deps
+          rm -fr deps/*/.git
+          du -kh -d 2 deps | sort -h
       - name: GENERATE DEPS VERSIONS
         run: |
           make rabbitmq-server-tested-deps.mk DEPS_DIR=$PWD/deps
@@ -50,6 +52,10 @@ jobs:
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
           make xref base_rmq_ref=master current_rmq_ref=$branch_or_tag_name DEPS_DIR=$PWD/deps
+      - name: COMPILE FOR TEST
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make test-build base_rmq_ref=master current_rmq_ref=$branch_or_tag_name DEPS_DIR=$PWD/deps
   rabbitmq-cli:
     runs-on: ubuntu-18.04
     needs: check
